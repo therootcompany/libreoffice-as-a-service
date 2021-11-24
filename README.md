@@ -8,7 +8,7 @@ Convert documents through libreoffice (soffice) as a service
 - System Requirements for Linux
 - How to test locally on macOS
 
-## Run with Node
+## Run LaaS
 
 ### Install
 
@@ -57,10 +57,10 @@ curl -fS "${BASE_URL}"'/api/convert/pdf?filename=Writing1.docx' \
 
 **Important**: `-d` is NOT the same as `--data-binary`.
 
-## System Requirements
+## System Requirements for Linux
 
-- LibreOffice
-- node
+- node v16+
+- LibreOffice v6.4+
 
 ```bash
 if [[ -z "$(command -v node)" ]]; then
@@ -75,18 +75,30 @@ if [[ -z "$(command -v libreoffice)" ]]; then
 fi
 ```
 
-### Users of macOS
+### How to test locally on macOS
 
-[Download LibreOffice for macOS](https://www.libreoffice.org/download/download/)
+- [Download LibreOffice for macOS](https://www.libreoffice.org/download/download/)
 
-If you install LibreOffice to `~/Applications`, you can add `soffice` to your path, like so:
+If you install LibreOffice to `~/Applications`, you can add `soffice` to your PATH, like so:
+
+1. Temporarily add `soffice` to your `PATH`
+   ```bash
+   export PATH="/Applications/LibreOffice.app/Contents/MacOS:$PATH"
+   ```
+2. Install `pathman`
+   ```bash
+   curl https://webinstall.dev/pathman | bash
+   export PATH="${HOME}.local/bin:${PATH}"
+   ```
+3. Permanently add `soffice` to your `PATH`
+   ```bash
+   pathman add /Applications/LibreOffice.app/Contents/MacOS
+   ```
+
+Now `node` will be able to find `soffice` and run it the same as on Linux.
+
+**Note**: You can also use Webi to install `node`:
 
 ```bash
-# Install pathman
-curl https://webinstall.dev/pathman | bash
-export PATH="${HOME}.local/bin:${PATH}"
-
-# Permanently (and in the current session) add soffice to PATH
-pathman add /Applications/LibreOffice.app/Contents/MacOS
-export PATH="/Applications/LibreOffice.app/Contents/MacOS:$PATH"
+curl -L https://webinstall.dev/node@lts | bash
 ```
