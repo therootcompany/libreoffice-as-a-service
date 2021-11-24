@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html charset="utf8">
+  <head>
+    <title>LibreConvert</title>
+    <!-- link rel="stylesheet" href="https://unpkg.com/mvp.css" /-->
+    <link rel="stylesheet" href="./mvp.css" />
+  </head>
+  <body>
+    <section>
+      <main>
+        <h1>DOCX to PDF Demo</h1>
+        <pre><code># convert
+POST /api/convert</code></pre>
+        <form method="POST" action="/api/convert">
+          <label>Upload .docx: <input type="file" onchange="convertFile(window.event)" /></label>
+        </form>
+      </main>
+    </section>
+    <script>
+      function convertFile(ev) {
+        let file = ev.target.files[0];
+        uploadFile(file)
+          .then(function (resp) {
+            window.alert(JSON.stringify(resp, null, 2));
+          })
+          .catch(function (err) {
+            console.error(err);
+            window.alert('Error: ' + err.toString());
+          });
+      }
+
+      async function uploadFile(file) {
+        let name = encodeURIComponent(file.name);
+        let format = 'pdf';
+        let resp = await window.fetch(`/api/convert/${format}?filename=${name}`, {
+          method: 'POST',
+          body: file,
+        });
+        if (!resp.ok) {
+          throw new Error('Error: ' + (await resp.text()));
+        }
+        console.info('Response:');
+        console.info(resp.status);
+        let disp = resp.headers.get('content-disposition') || '';
+        console.info(disp);
+
+        // ex: filename="Bob's annual \"report\""
+        let newName = disp.replace(/.*filename="?/, '');
+        if ('"' === newName[newName.length - 1]) {
+          newName = newName.slice(0, -1);
+        }
+        newName = newName.replace(/\\"/g, '"');
+        console.log('newName:', newName);
+        if (!newName) {
+          console.log('missing newName');
+          let parts = file.name.split('.');
+          let ext = 'pdf';
+
+          if (parts.length > 1) {
+            parts.pop();
+          }
+          parts.push(ext);
+          newName = parts.join('.');
+        }
+
+        let blob = await resp.blob();
+        let objectUrl = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = newName;
+        a.click();
+
+        setTimeout(() => {
+          URL.revokeObjectURL(objectUrl);
+        }, 150);
+
+        return `Success! ${file.name}`;
+      }
+    </script>
+  </body>
+</html>
