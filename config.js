@@ -14,6 +14,7 @@ config.CORS_DOMAINS = (process.env.CORS_DOMAINS || '')
   .trim()
   .split(/[,\s]+/g)
   .filter(Boolean);
-config.CORS_METHODS = process.env.CORS_METHODS.trim()
+config.CORS_METHODS = (process.env.CORS_METHODS || '')
+  .trim()
   .split(/[,\s]+/g)
   .filter(Boolean);
