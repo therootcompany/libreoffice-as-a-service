@@ -100,6 +100,11 @@ function do_create() {
     ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "root@${my_ipv4}" "
         curl -fsSL https://webinstall.dev/ssh-adduser | bash
         curl -fsSL https://webinstall.dev/vps-addswap | bash
+        apt-get -y update
+        sleep 2
+        rm /var/lib/apt/lists/lock
+        rm -f /var/lib/dpkg/lock
+        killall apt-get || true
     "
 }
 

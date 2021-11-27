@@ -38,6 +38,10 @@ if [[ -z "$(command -v fish)" ]]; then
     if ! sudo apt-get install -y fish; then
         curl https://webinstall.dev/fish | bash
     fi
+    sleep 2
+    sudo rm -f /var/lib/apt/lists/lock
+    sudo rm -f /var/lib/dpkg/lock
+    sudo killall apt-get || true
 fi
 
 source .env 2> /dev/null || true
