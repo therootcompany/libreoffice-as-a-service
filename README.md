@@ -114,7 +114,7 @@ curl -L https://webinstall.dev/node@lts | bash
 
 Create a `.env` with at least your Digital Ocean API Token and a DNS provider's token:
 
-(as you can see, currently both Cloudflare and Godaddy are supported)
+(as you can see, currently Cloudflare, DuckDNS, and Godaddy are supported)
 
 ```bash
 DIGITALOCEAN_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -123,9 +123,12 @@ DIGITALOCEAN_TAG=delete-me
 # optional
 DIGITALOCEAN_PROJECT=00000000-0000-4000-8000-000000000000
 
-DNS_DEVELOPMENT_API=scripts/builder/00-godaddy-api.sh
-GODADDY_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-GODADDY_API_SECRET=xxxxxxxxxxxxxxxxxxxxxx
+DNS_DEVELOPMENT_API=scripts/builder/00-duckdns-api.sh
+DUCKDNS_API_TOKEN=00000000-0000-4000-8000-000000000000
+
+#DNS_DEVELOPMENT_API=scripts/builder/00-godaddy-api.sh
+#GODADDY_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#GODADDY_API_SECRET=xxxxxxxxxxxxxxxxxxxxxx
 
 DNS_PRODUCTION_API=scripts/builder/00-cloudflare-api.sh
 CLOUDFLARE_API_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
