@@ -12,6 +12,7 @@
         <pre><code># convert
 POST /api/convert</code></pre>
         <form method="POST" action="/api/convert">
+          <label>API Token: <input type="password" /></label>
           <label>Upload .docx: <input type="file" onchange="convertFile(window.event)" /></label>
         </form>
       </main>
@@ -19,7 +20,8 @@ POST /api/convert</code></pre>
     <script>
       function convertFile(ev) {
         let file = ev.target.files[0];
-        uploadFile(file)
+        let apiToken = document.querySelector('input[type="password"]').value;
+        uploadFile(file, apiToken)
           .then(function (resp) {
             window.alert(JSON.stringify(resp, null, 2));
           })
@@ -29,11 +31,14 @@ POST /api/convert</code></pre>
           });
       }
 
-      async function uploadFile(file) {
+      async function uploadFile(file, apiToken) {
         let name = encodeURIComponent(file.name);
         let format = 'pdf';
         let resp = await window.fetch(`/api/convert/${format}?filename=${name}`, {
           method: 'POST',
+          headers: {
+            Authorization: `Bearer ${apiToken}`,
+          },
           body: file,
         });
         if (!resp.ok) {

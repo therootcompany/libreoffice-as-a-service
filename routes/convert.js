@@ -7,6 +7,19 @@ let Fsp = require('fs').promises;
 
 let convert = require('../soffice.js');
 
+function secureCompare(a, b) {
+  if (!a && !b) {
+    throw new Error('[secure compare] reference string should not be empty');
+  }
+
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  let Crypto = require('crypto');
+  return Crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
+
 module.exports = function (fastify, opts, done) {
   fastify.addContentTypeParser('*', function (request, payload, done) {
     // skip parsing so that the handler has access to the stream
@@ -46,6 +59,12 @@ module.exports = function (fastify, opts, done) {
 
   // POST /api/convert/:name (ex: report.docx)
   fastify.post('/:format', async function (request, reply) {
+    let token = (request.raw.headers.authorization || '').split(' ')[1];
+    if (!secureCompare(token, process.env.API_TOKEN)) {
+      reply.code(401);
+      return { success: false, error: 'UNAUTHORIZED' };
+    }
+
     // target format
     let format = request.params.format;
 

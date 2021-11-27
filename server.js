@@ -1,12 +1,13 @@
 'use strict';
 
+let Path = require('path');
 require('dotenv').config({ path: '../.env.secret' });
 require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: Path.join(process.env.HOME, '.env') });
 
 let config = require('./config.js');
 
 let Http = require('http');
-let Path = require('path');
 
 let fastify = require('fastify')({
   logger: true,
