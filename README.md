@@ -118,6 +118,8 @@ Create a `.env` with at least your Digital Ocean API Token and a DNS provider's 
 
 ```bash
 DIGITALOCEAN_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# the default tag will be 'delete-me' if you don't set one
+DIGITALOCEAN_TAG=delete-me
 # optional
 DIGITALOCEAN_PROJECT=00000000-0000-4000-8000-000000000000
 

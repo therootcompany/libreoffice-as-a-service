@@ -34,7 +34,7 @@ function do_create() {
           "user_data": "N/A",
           "with_droplet_agent": true,
           "volumes": [],
-          "tags": [ "delete-me" ]
+          "tags": [ "'"${DIGITAL_OCEAN_TAG:-'delete-me'}"'" ]
         }' | jq '.droplet.id'
     )"
 
