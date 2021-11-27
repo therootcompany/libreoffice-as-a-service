@@ -10,7 +10,7 @@ Convert documents through libreoffice (soffice) as a service
 
 ## Run LaaS
 
-### Install
+### Download
 
 ```bash
 git clone git@github.com:savvi-legal/libreoffice-as-a-service.git
@@ -35,6 +35,12 @@ echo "API_TOKEN=$(openssl rand -hex 8)" >> .env
 ```bash
 npm ci --only=production
 npm run start
+```
+
+### Install
+
+```bash
+bash scripts/install.sh
 ```
 
 ## Demo Page
