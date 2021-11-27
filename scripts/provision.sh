@@ -6,7 +6,7 @@ set -u
 GIT_REPO_NAME="${GIT_REPO_NAME:-"${1}"}"
 GIT_REF_NAME="${GIT_REF_NAME:-"${2}"}"
 my_env="${2:-development}"
-DNS_RECORD_NAME="${DNS_RECORD_NAME:-"${4}"}"
+DNS_RECORD_NAME="${DNS_RECORD_NAME:-"${3}"}"
 DNS_ZONE_NAME="${DNS_ZONE_NAME:-"${4}"}"
 LAAS_API_TOKEN="${LAAS_API_TOKEN:-"$(openssl rand -hex 10)"}"
 
