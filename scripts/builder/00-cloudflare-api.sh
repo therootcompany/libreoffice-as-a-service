@@ -9,6 +9,19 @@ function _cf_api() {
     local my_path="${2}"
     local my_json="${3:-}"
 
+    my_debug="$(
+        _cf_api_2 "${my_method}" "${my_path}" "${my_json}"
+    )"
+
+    #echo >&2 "${my_method}" "${my_path}" "${my_debug}"
+    echo "${my_debug}"
+}
+
+function _cf_api_2() {
+    local my_method="${1}"
+    local my_path="${2}"
+    local my_json="${3:-}"
+
     if [[ -n ${my_json} ]]; then
         curl -fsSL -X "${my_method}" "https://api.cloudflare.com/client${my_path}" \
             -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
@@ -27,6 +40,7 @@ function _cf_list_accounts() {
 
 function _cf_get_zone_id() {
     local my_zone="${1}"
+
     local my_zone_id
 
     my_zone_id="$(
@@ -39,13 +53,23 @@ function _cf_get_zone_id() {
 function _cf_get_ipv46() {
     local my_sub="${1}"
     local my_zone="${2}"
+
     local my_domain="${my_sub}.${my_zone}"
     local my_zone_id
+    local my_cname
     local my_ipv4
     local my_ipv6
+
     my_zone_id="$(
         _cf_get_zone_id "${my_zone}"
     )"
+    my_cname="$(
+        _cf_api GET "/v4/zones/${my_zone_id}/dns_records?type=CNAME&name=${my_domain}&page=1&per_page=20&order=type&direction=desc&match=all" |
+            jq -r '.result[0].content'
+    )"
+    if [[ -n ${my_cname} ]]; then
+        my_domain="${my_cname}"
+    fi
     my_ipv4="$(
         _cf_api GET "/v4/zones/${my_zone_id}/dns_records?type=A&name=${my_domain}&page=1&per_page=20&order=type&direction=desc&match=all" |
             jq -r '.result[0].content'
@@ -152,6 +176,7 @@ function _cf_set_ipv46() {
     local my_zone="${2}"
     local my_new_ipv4="${3}"
     local my_new_ipv6="${4}"
+
     local my_domain="${my_sub}.${my_zone}"
     local my_zone_id
 
@@ -170,6 +195,7 @@ function _cf_set_ipv46() {
 function _cf_clear_ipv46() {
     local my_sub="${1}"
     local my_zone="${2}"
+
     local my_domain="${my_sub}.${my_zone}"
     local my_zone_id
 
