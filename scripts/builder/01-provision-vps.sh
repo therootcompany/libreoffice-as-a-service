@@ -42,10 +42,10 @@ function do_create() {
         # assign resource to project
         echo "Reassigning Droplet ${my_droplet} to Project"
         do_api POST "/v2/projects/${my_project}/resources" '{
-      "resources": [
-        "do:droplet:'"${my_droplet}"'"
-      ]
-    }'
+          "resources": [
+            "do:droplet:'"${my_droplet}"'"
+          ]
+        }'
     fi
 
     my_status=""
