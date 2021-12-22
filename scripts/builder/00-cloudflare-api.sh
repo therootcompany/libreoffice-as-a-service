@@ -4,16 +4,20 @@ set -u
 
 my_zone_id=""
 
+function echo2() {
+    echo >&2 "$@"
+}
+
 function _cf_api() {
     local my_method="${1}"
     local my_path="${2}"
     local my_json="${3:-}"
 
     my_debug="$(
-        _cf_api_2 "${my_method}" "${my_path}" "${my_json}"
+        _cf_api_2 "${my_method}" "${my_path}" "${my_json}" | jq
     )"
 
-    #echo >&2 "${my_method}" "${my_path}" "${my_debug}"
+    #echo2 "${my_method}" "${my_path}" "${my_debug}"
     echo "${my_debug}"
 }
 
@@ -21,6 +25,8 @@ function _cf_api_2() {
     local my_method="${1}"
     local my_path="${2}"
     local my_json="${3:-}"
+
+    #echo2 "curl -fsSL -X '${my_method}' 'https://api.cloudflare.com/client${my_path}' -H 'Authorization: Bearer ${CLOUDFLARE_API_TOKEN}'"
 
     if [[ -n ${my_json} ]]; then
         curl -fsSL -X "${my_method}" "https://api.cloudflare.com/client${my_path}" \
@@ -67,6 +73,9 @@ function _cf_get_ipv46() {
         _cf_api GET "/v4/zones/${my_zone_id}/dns_records?type=CNAME&name=${my_domain}&page=1&per_page=20&order=type&direction=desc&match=all" |
             jq -r '.result[0].content'
     )"
+    if [[ "null" == "${my_cname}" ]]; then
+        my_cname=""
+    fi
     if [[ -n ${my_cname} ]]; then
         my_domain="${my_cname}"
     fi
@@ -84,7 +93,7 @@ function _cf_get_ipv46() {
     if [[ "null" == "${my_ipv6}" ]]; then
         my_ipv6=""
     fi
-    if [[ -z ${my_ipv4} ]] && [[ -z ${my_ipv4} ]]; then
+    if [[ -z ${my_ipv4} ]] && [[ -z ${my_ipv6} ]]; then
         echo ''
         return 0
     fi
